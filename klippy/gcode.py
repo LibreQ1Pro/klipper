@@ -122,6 +122,8 @@ class GCodeDispatch:
             func = getattr(self, 'cmd_' + cmd)
             desc = getattr(self, 'cmd_' + cmd + '_help', None)
             self.register_command(cmd, func, True, desc)
+        # Support for aborting running macros (see set_break())
+        self.break_until_cmd = None
     def is_traditional_gcode(self, cmd):
         # A "traditional" g-code command is a letter and followed by a number
         try:
@@ -155,6 +157,11 @@ class GCodeDispatch:
         if desc is not None:
             self.gcode_help[cmd] = desc
         self._build_status_commands()
+    def set_break(self, until_cmd):
+        # Skip all g-code commands until 'until_cmd' is received
+        self.break_until_cmd = until_cmd.upper() if until_cmd else None
+    def is_break_pending(self):
+        return self.break_until_cmd is not None
     def register_mux_command(self, cmd, key, value, func, desc=None):
         prev = self.mux_commands.get(cmd)
         if prev is None:
@@ -217,6 +224,12 @@ class GCodeDispatch:
             params = { parts[i]: parts[i+1].strip()
                        for i in range(1, len(parts), 2) }
             gcmd = GCodeCommand(self, cmd, origline, params, need_ack)
+            # Check if commands are being skipped due to set_break()
+            if self.break_until_cmd is not None:
+                if cmd != self.break_until_cmd:
+                    gcmd.ack()
+                    continue
+                self.break_until_cmd = None
             # Invoke handler for command
             handler = self.gcode_handlers.get(cmd, self.cmd_default)
             try:
