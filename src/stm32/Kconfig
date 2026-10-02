@@ -273,9 +273,29 @@ config STM32F103GD_DISABLE_SWD
         and PA14 pins from being available. Selecting this option
         disables SWD at startup and thus makes these pins available.
 
+config STM32_SERIAL_ROM_BOOTLOADER
+    bool "Enter ROM bootloader on serial bootloader request" if LOW_LEVEL_OPTIONS && SERIAL
+    depends on MACH_STM32F4
+    default n
+    help
+        Reboot into the chip's ROM bootloader when a "serial bootloader
+        request" is received.  The ROM bootloader can then be used with
+        stm32flash on the same serial port, without needing access to
+        the BOOT0 pin.
+
+config STM32_CHAINED_KATAPULT
+    bool "Katapult installed after a 32KiB vendor bootloader" if LOW_LEVEL_OPTIONS
+    depends on MACH_STM32F4 && STM32_FLASH_START_C000
+    default n
+    help
+        Select this if Katapult is located at 0x08008000 (after a 32KiB
+        vendor bootloader that is kept intact) and this code at
+        0x0800C000.  Bootloader requests then start Katapult directly,
+        without a chip reset.
+
 config STM32_DFU_ROM_ADDRESS
     hex
-    default 0 if !USB
+    default 0 if !USB && !STM32_SERIAL_ROM_BOOTLOADER
     default 0x1fffc400 if MACH_STM32F042
     default 0x1fffc800 if MACH_STM32F072
     default 0x1fff0000 if MACH_STM32F4 || MACH_STM32F7 || MACH_STM32G0 || MACH_STM32G4 || MACH_STM32L4
