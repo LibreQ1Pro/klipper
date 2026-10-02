@@ -114,6 +114,16 @@ config RP2040_STAGE2_CLKDIV
     default 4 if RP2040_FLASH_GENERIC_03
     default 2
 
+config RPXXXX_XOSC_STARTUP_MULT
+    int "Crystal oscillator startup delay multiplier" if LOW_LEVEL_OPTIONS
+    default 1
+    range 1 300
+    help
+        Some boards use a crystal that takes longer than 1ms to
+        stabilize (eg, the toolhead board of the QIDI Q1 Pro needs
+        100). Increase this value if the micro-controller fails to
+        start reliably. The default is suitable for most boards.
+
 
 ######################################################################
 # Communication inteface
