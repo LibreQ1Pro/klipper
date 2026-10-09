@@ -3,7 +3,7 @@
 # This file may be distributed under the terms of the GNU GPLv3 license.
 import logging
 import mcu
-from . import spi_temperature, bed_mesh
+from . import spi_temperature, bed_mesh, homing
 
 # MAX6675 sensor with a correction factor applied to the readings
 class MAX6675Scaled(spi_temperature.MAX6675):
@@ -75,6 +75,18 @@ class QidiQ1Pro:
     cmd_REVERSE_HOMING_help = "Home Z to its maximum (sensorless endstops)"
     def cmd_REVERSE_HOMING(self, gcmd):
         toolhead = self.printer.lookup_object('toolhead')
+        distance = gcmd.get_float('DISTANCE', None, above=0.)
+        if distance is not None:
+            # Only move Z down by the given distance, stopping early if the
+            # bed hits the bottom of the frame (Z must be "homed" with
+            # SET_KINEMATIC_POSITION; the position is kept, not homed)
+            movepos = toolhead.get_position()
+            movepos[2] += distance
+            hmove = homing.HomingMove(self.printer, self.reverse_endstops,
+                                      toolhead)
+            hmove.homing_move(movepos, self.reverse_speed, probe_pos=True,
+                              check_triggered=False)
+            return
         status = toolhead.get_status(self.reactor.monotonic())
         zmin = status['axis_minimum'][2]
         # Each Z stepper stops on its own endstop, as in a G28
