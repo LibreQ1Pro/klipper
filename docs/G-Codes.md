@@ -1403,6 +1403,23 @@ persisted in the config by issuing `SAVE_CONFIG` command, and if
 `[input_shaper]` was already enabled previously, these parameters
 take effect immediately.
 
+### [reverse_homing]
+
+The following command is available when a
+[reverse_homing config section](Config_Reference.md#reverse_homing) is
+enabled.
+
+#### REVERSE_HOMING
+`REVERSE_HOMING [DISTANCE=<mm>]`: Home the Z axis to its maximum. Each
+Z stepper moves until its own endstop triggers, then the Z position is
+set to the Z maximum (the position_max of the Z axis). Home Z again
+for the exact position. If the homing fails, all motors are
+disabled. With `DISTANCE`, Z is only moved towards its maximum by up
+to the given distance, stopping early if the endstops trigger; the Z
+position is not changed by the endstops and Z is not homed (it must be
+already homed or set with `SET_KINEMATIC_POSITION`). This may be used
+to lower a bed without pushing it into the bottom of the frame.
+
 ### [respond]
 
 The following standard G-Code commands are available when the

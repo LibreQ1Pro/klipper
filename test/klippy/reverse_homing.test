@@ -1,0 +1,16 @@
+# Test case for reverse_homing
+CONFIG reverse_homing.cfg
+DICTIONARY atmega2560.dict
+
+# Move Z down by a distance without homing it
+SET_KINEMATIC_POSITION X=100 Y=100 Z=150
+REVERSE_HOMING DISTANCE=7
+G1 Z140 F600
+
+# Home Z to its maximum
+REVERSE_HOMING
+G1 Z190 F600
+
+# Regular homing still works
+G28
+G1 Z10 F600

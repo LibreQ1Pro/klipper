@@ -1510,6 +1510,33 @@ gcode:
 #   axis. The default is to not force a position for an axis.
 ```
 
+### [reverse_homing]
+
+Homing of the Z axis to its maximum with a separate endstop for each Z
+stepper, typically the sensorless (stallguard) endstop of each Z
+driver. Each Z stepper stops on its own endstop, so a bed driven by
+several Z steppers is mechanically aligned against the bottom of the
+frame. The Z position is then set to the position_max of the Z axis,
+so it is only as exact as that value. See the
+[command reference](G-Codes.md#reverse_homing) for additional
+information.
+
+```
+[reverse_homing]
+steppers:
+#   A comma separated list of the Z steppers (for example,
+#   "stepper_z, stepper_z1"). This parameter must be provided.
+endstop_pins:
+#   A comma separated list of endstop pins, one for each stepper in
+#   "steppers" and in the same order (for example,
+#   "tmc2209_stepper_z:virtual_endstop,
+#   tmc2209_stepper_z1:virtual_endstop"). This parameter must be
+#   provided.
+#speed: 5.0
+#   The speed (in mm/s) of the Z move towards the endstops. The
+#   default is 5mm/s.
+```
+
 ### [endstop_phase]
 
 Stepper phase adjusted endstops. To use this feature, define a config
