@@ -2333,6 +2333,42 @@ z_offset:
 #   See the "probe" section for more information on the parameters above.
 ```
 
+### [nozzle_touch]
+
+Setting the Z position by touching the bed with the nozzle, for
+printers that have a sensor which detects the nozzle touching the bed
+in addition to the main [probe](#probe) (for example, strain gauges
+under the bed of the QIDI Q1 Pro). The main probe homes Z and measures
+bed meshes, then the
+[NOZZLE_TOUCH](G-Codes.md#nozzle_touch) command corrects the Z
+position at the current XY location. This section does not replace
+the probe and does not affect any probe command.
+
+```
+[nozzle_touch]
+pin:
+#   Pin connected to the sensor output. This parameter must be
+#   provided.
+z_offset:
+#   The Z position of the nozzle when the sensor triggers (negative
+#   if the nozzle presses into the bed before the sensor triggers).
+#   This parameter must be provided.
+#accel:
+#   The acceleration (in mm/s^2) used while touching the bed. The
+#   default is to not change the acceleration.
+#speed:
+#lift_speed:
+#samples:
+#sample_retract_dist:
+#samples_result:
+#samples_tolerance:
+#samples_tolerance_retries:
+#activate_gcode:
+#deactivate_gcode:
+#deactivate_on_each_sample:
+#   See the "probe" section for information on these parameters.
+```
+
 ### [probe_eddy_current]
 
 Support for eddy current inductive probes. One may define this section

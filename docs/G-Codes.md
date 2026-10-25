@@ -1069,6 +1069,22 @@ be between 0.0 and 1.0, unless a 'scale' is defined in the config.
 When 'scale' is defined, then this value should be  between 0.0 and
 'scale'.
 
+### [nozzle_touch]
+
+The following command is available when a
+[nozzle_touch config section](Config_Reference.md#nozzle_touch) is
+enabled.
+
+#### NOZZLE_TOUCH
+`NOZZLE_TOUCH [PROBE_SPEED=<mm/s>] [LIFT_SPEED=<mm/s>] [SAMPLES=<count>]
+[SAMPLE_RETRACT_DIST=<mm>] [SAMPLES_RESULT=median|average]
+[SAMPLES_TOLERANCE=<mm>] [SAMPLES_TOLERANCE_RETRIES=<count>]`: Move
+the nozzle down until the sensor triggers, then set the Z position so
+that the bed is at Z=0 at the current XY location. The Z axis must be
+homed. The parameters have the same meaning as for the
+[PROBE](#probe) command. The nozzle stays at the position where the
+sensor triggered.
+
 ### [output_pin]
 
 The following command is available when an

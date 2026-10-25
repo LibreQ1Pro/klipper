@@ -1,0 +1,16 @@
+# Test case for nozzle_touch support
+CONFIG nozzle_touch.cfg
+DICTIONARY atmega2560.dict
+
+# Home Z with the probe, then set it with the nozzle touch
+G28
+G1 Z5 X100 Y100 F6000
+NOZZLE_TOUCH
+G1 Z5
+NOZZLE_TOUCH SAMPLES=1 PROBE_SPEED=10
+G1 Z5
+
+# The probe is not affected
+QUERY_PROBE
+PROBE
+BED_MESH_CALIBRATE
